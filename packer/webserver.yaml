@@ -1,0 +1,6 @@
+- name: configure webserver
+  hosts: webserver
+  tasks:
+    - name: install Apache
+      yum:
+        name: httpd
