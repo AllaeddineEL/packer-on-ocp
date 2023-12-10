@@ -34,18 +34,10 @@ build {
 
   provisioner "ansible" {
     groups        = ["webserver"]
-    playbook_file = "./webserver.yml"
+    playbook_file = "./webserver.yaml"
     extra_arguments = [
       "--extra-vars",
       "ansible_host=${var.ansible_host} ansible_connection=${var.ansible_connection}"
     ]
   }
-  post-processors {
-    post-processor "docker-tag" {
-      repository = "default-route-openshift-image-registry.crc-vm.ayoa55ynalig.instruqt.io"
-      tags       = ["centos-packer", "packer-rocks"]
-      only       = ["docker.example"]
-    }
-    post-processor "docker-push" {}
-  }
-}
+    
