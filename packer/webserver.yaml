@@ -1,6 +1,10 @@
 - name: configure webserver
   hosts: webserver
   tasks:
-    - name: install Apache
+    - name: Add epel-release repo
       yum:
-        name: httpd
+        name: epel-release
+        state: present
+    - name: install nginx
+      yum:
+        name: nginx
