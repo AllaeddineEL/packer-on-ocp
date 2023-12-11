@@ -8,5 +8,15 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = "1.14.0"
     }
+    hcp = {
+      source  = "hashicorp/hcp"
+      version = "0.17.0"
+    }
+  }
+  cloud {
+    organization = "<ORG_NAME>"
+    workspaces {
+      name = "path-to-packer"
+    }
   }
 }

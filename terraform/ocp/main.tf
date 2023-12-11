@@ -1,3 +1,13 @@
+data "hcp_packer_iteration" "ubuntu" {
+  bucket_name = "path-to-packer-container"
+  channel     = "path-to-packer-container-channel"
+}
+data "hcp_packer_image" "path-to-packer-container" {
+  bucket_name    = data.hcp_packer_iteration.ubuntu.bucket_name
+  iteration_id   = data.hcp_packer_iteration.ubuntu.ulid
+  cloud_provider = "docker"
+  region         = "docker"
+}
 resource "kubernetes_deployment" "demo_app" {
   metadata {
     name      = "demo-app"
