@@ -24,7 +24,13 @@ variable "ansible_connection" {
 source "docker" "example" {
   image       = "centos:7"
   commit      = true
+  exec_user = "www-data"
   run_command = ["-d", "-i", "-t", "--name", var.ansible_host, "{{.Image}}", "/bin/bash"]
+      changes = [
+      "USER www-data",
+      "CMD [\"nginx\", \"-g\", \"daemon off;\"]"
+     
+    ]
 }
 
 build {
@@ -50,5 +56,6 @@ build {
     build_labels = {
       "build-time"   = timestamp(),
       "build-source" = basename(path.cwd)
+      "local-image-reg-url" = "image-registry.openshift-image-registry.svc:5000"
     }
   }  
