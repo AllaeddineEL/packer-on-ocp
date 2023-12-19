@@ -22,15 +22,15 @@ variable "ansible_connection" {
 }
 
 source "docker" "example" {
-  image       = "centos:7"
-  commit      = true
-  exec_user = "www-data"
+  image  = "centos:7" #"nginxinc/nginx-unprivileged:stable" #
+  commit = true
+  // exec_user   = "nginx"
   run_command = ["-d", "-i", "-t", "--name", var.ansible_host, "{{.Image}}", "/bin/bash"]
-      changes = [
-      "USER www-data",
-      "CMD [\"nginx\", \"-g\", \"daemon off;\"]"
-     
-    ]
+  changes = [
+    "USER nginx",
+    "CMD [\"nginx\", \"-g\", \"daemon off;\"]"
+
+  ]
 }
 
 build {
@@ -46,6 +46,15 @@ build {
       "ansible_host=${var.ansible_host} ansible_connection=${var.ansible_connection}"
     ]
   }
+   provisioner "shell" {
+  inline = [
+    #"chown -R nginx:nginx /var/cache/nginx",
+    "chown -R nginx:nginx /var/log/nginx",
+    "chown -R nginx:nginx /etc/nginx/conf.d",
+    "touch /var/run/nginx.pid",
+    "chown -R nginx:nginx /var/run/nginx.pid",
+  ]
+}
   hcp_packer_registry {
     bucket_name = "path-to-packer-container"
     description = "Path to Packer Container Demo"

@@ -1,0 +1,7 @@
+- name: Deploy my App
+  hosts: webserver
+  tasks:
+    - name: Deploy webpage
+      copy:
+        src: index.html
+        dest: /usr/share/nginx/html

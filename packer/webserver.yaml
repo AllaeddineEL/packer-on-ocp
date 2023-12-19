@@ -8,3 +8,15 @@
     - name: install nginx
       yum:
         name: nginx
+    - name: Push Default config
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/
+    - name: Push Default config
+      copy:
+        src: default.conf
+        dest: /etc/nginx/conf.d/
+    - name: Deploy webpage
+      copy:
+        src: index.html
+        dest: /usr/share/nginx/html
