@@ -8,6 +8,9 @@
     - name: install nginx
       yum:
         name: nginx
+    - name: install unzip
+      yum:
+        name: unzip
     - name: Push Default config
       copy:
         src: nginx.conf
@@ -16,7 +19,7 @@
       copy:
         src: default.conf
         dest: /etc/nginx/conf.d/
-    - name: Deploy webpage
-      copy:
-        src: index.html
+    - name: Deploy Packer WEB App
+      unarchive:
+        src: packer-io.zip
         dest: /usr/share/nginx/html

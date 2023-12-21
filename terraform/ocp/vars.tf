@@ -1,0 +1,2 @@
+variable "host_name" {
+}
