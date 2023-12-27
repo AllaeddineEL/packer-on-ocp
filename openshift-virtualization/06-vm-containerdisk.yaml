@@ -1,0 +1,59 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    app: centos-vm
+  name: centos-vm
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: centos-vm
+    spec:
+      domain:
+        cpu:
+          cores: 1
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: rootdisk
+            - disk:
+                bus: virtio
+              name: cloudinitdisk
+          interfaces:
+            - masquerade: {}
+              name: default
+          networkInterfaceMultiqueue: true
+          rng: {}
+        features:
+          acpi: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 2Gi
+      hostname: centos-vm
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+        - containerDisk:
+            image: quay.io/containerdisks/centos:7-2009
+          name: rootdisk
+        - cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              user: fedora
+              password: 'dmbb-vdyv-l6ga'
+              chpasswd: { expire: False }
+          name: cloudinitdisk

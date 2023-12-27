@@ -24,8 +24,7 @@ resource "kubernetes_service" "demo_app" {
       target_port = 8080
     }
     selector = {
-      app        = kubernetes_deployment.demo_app.metadata.0.labels.app
-      deployment = kubernetes_deployment.demo_app.metadata.0.name
+      app = kubernetes_deployment.demo_app.metadata.0.labels.app
     }
     type = "ClusterIP"
   }

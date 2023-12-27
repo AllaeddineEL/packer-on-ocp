@@ -1,0 +1,10 @@
+- name: install qemu guest agent on the VM image
+  hosts: webserver
+  tasks:
+    - name: install qemu guest agent
+      yum:
+        name: qemu-guest-agent
+    - name: Enable service qemu-guest-agent, and not touch the state
+      service:
+        name: qemu-guest-agent
+        enabled: yes

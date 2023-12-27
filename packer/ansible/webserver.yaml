@@ -13,13 +13,13 @@
         name: unzip
     - name: Push Default config
       copy:
-        src: nginx.conf
+        src: ../nginx-conf/nginx.conf
         dest: /etc/nginx/
     - name: Push Default config
       copy:
-        src: default.conf
+        src: ../nginx-conf/default.conf
         dest: /etc/nginx/conf.d/
     - name: Deploy Packer WEB App
       unarchive:
-        src: packer-io.zip
+        src: ../app/packer-io.zip
         dest: /usr/share/nginx/html
