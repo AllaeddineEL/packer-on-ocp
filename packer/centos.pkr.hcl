@@ -38,8 +38,10 @@ source "docker" "centos" {
   ]
 }
 source "qemu" "centos" {
-  iso_url          = "CentOS-7-x86_64-GenericCloud.qcow2"
+  iso_url          = "CentOS-7-x86_64-GenericCloud.qcow2c"
   disk_image       = "true"
+  disk_size        = "10G"
+  disk_compression = "true"
   iso_checksum     = "none"
   output_directory = "vm-image"
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
@@ -76,7 +78,7 @@ build {
     groups        = ["webserver"]
     playbook_file = "./ansible/webserver.yaml"
   }
-  
+
   hcp_packer_registry {
     bucket_name = "path-to-packer-container"
     description = "Path to Packer Container Demo"

@@ -11,15 +11,15 @@ spec:
       metadata:
         name: centos-vm
       spec:
-        sourceRef:
-          kind: DataSource
-          name: rhel9
-          namespace: openshift-virtualization-os-images
+        source:
+          pvc:
+            namespace: "default"
+            name: "centos-vm-packer"
         storage:
           resources:
             requests:
-              storage: 30Gi
-  running: false
+              storage: 20Gi
+  running: true
   template:
     metadata:
       labels:
@@ -42,12 +42,6 @@ spec:
             - masquerade: {}
               name: default
           rng: {}
-        features:
-          smm:
-            enabled: true
-        firmware:
-          bootloader:
-            efi: {}
         resources:
           requests:
             memory: 8Gi
@@ -63,6 +57,6 @@ spec:
             userData: |-
               #cloud-config
               user: cloud-user
-              password: '<password>' 
+              password: 'passw0rd' 
               chpasswd: { expire: False }
           name: cloudinitdisk
