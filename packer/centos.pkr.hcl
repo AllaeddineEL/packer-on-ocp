@@ -63,17 +63,34 @@ source "qemu" "centos" {
 }
 
 build {
+  name = "vm"
   sources = [
-    "source.docker.centos",
     "source.qemu.centos"
   ]
 
   provisioner "ansible" {
     groups        = ["webserver"]
     playbook_file = "./ansible/qemu-agent.yaml"
-    only       = ["qemu.centos"]
   }
 
+  provisioner "ansible" {
+    groups        = ["webserver"]
+    playbook_file = "./ansible/webserver.yaml"
+  }
+
+  post-processors {
+      post-processor "shell-local" {
+        inline = ["virtctl image-upload dv centos-vm-packer --size=10Gi  --force-bind --image-path vm-image/centos-vm-packer.qcow2 -n demo"]
+        only   = ["qemu.centos"]
+      }
+  }
+}
+
+build {
+  name = "container"
+  sources = [
+    "source.docker.centos"
+  ]
   provisioner "ansible" {
     groups        = ["webserver"]
     playbook_file = "./ansible/webserver.yaml"
@@ -91,4 +108,4 @@ build {
       "build-source" = basename(path.cwd)
       "local-image-reg-url" = "image-registry.openshift-image-registry.svc:5000"
     }
-  }  
+  } 
