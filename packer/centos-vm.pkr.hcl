@@ -6,12 +6,6 @@ packer {
     }
   }
   required_plugins {
-    docker = {
-      version = ">= 1.0.8"
-      source  = "github.com/hashicorp/docker"
-    }
-  }
-   required_plugins {
     qemu = {
       version = "~> 1"
       source  = "github.com/hashicorp/qemu"
@@ -19,24 +13,6 @@ packer {
   }
 }
 
-variable "ansible_host" {
-  default = "default"
-}
-
-variable "ansible_connection" {
-  default = "docker"
-}
-
-source "docker" "centos" {
-  image  = "centos:7"
-  commit = true
-  run_command = ["-d", "-i", "-t", "--name", var.ansible_host, "{{.Image}}", "/bin/bash"]
-  changes = [
-    "USER nginx",
-    "CMD [\"nginx\", \"-g\", \"daemon off;\"]"
-
-  ]
-}
 source "qemu" "centos" {
   iso_url          = "CentOS-7-x86_64-GenericCloud.qcow2c"
   disk_image       = "true"
@@ -64,31 +40,23 @@ source "qemu" "centos" {
 
 build {
   sources = [
-    "source.docker.centos",
     "source.qemu.centos"
   ]
 
   provisioner "ansible" {
     groups        = ["webserver"]
     playbook_file = "./ansible/qemu-agent.yaml"
-    only       = ["qemu.centos"]
+    only          = ["qemu.centos"]
   }
 
   provisioner "ansible" {
     groups        = ["webserver"]
     playbook_file = "./ansible/webserver.yaml"
   }
-
-  hcp_packer_registry {
-    bucket_name = "path-to-packer-container"
-    description = "Path to Packer Container Demo"
-    bucket_labels = {
-      "team" = "app-development",
-      "os"   = "centos"
-    }
-    build_labels = {
-      "build-time"   = timestamp(),
-      "build-source" = basename(path.cwd)
-      "local-image-reg-url" = "image-registry.openshift-image-registry.svc:5000"
+  post-processors {
+    post-processor "shell-local" {
+      inline = ["virtctl image-upload dv centos-vm-packer --size=10Gi  --force-bind --image-path vm-image/centos-vm-packer.qcow2 -n demo"]
+      only   = ["qemu.centos"]
     }
   }
+}
