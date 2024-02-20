@@ -18,7 +18,7 @@ source "qemu" "centos" {
   disk_image       = "true"
   disk_size        = "10G"
   disk_compression = "true"
-  iso_checksum     = "none"
+  iso_checksum     = "e60b6ed1697884d5da1c6ea5a652f9bc"
   output_directory = "vm-image"
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
   format           = "qcow2"
