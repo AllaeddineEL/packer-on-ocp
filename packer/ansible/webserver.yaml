@@ -23,3 +23,8 @@
       unarchive:
         src: ../app/packer-io.zip
         dest: /usr/share/nginx/html
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
