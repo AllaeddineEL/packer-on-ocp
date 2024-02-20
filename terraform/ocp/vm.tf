@@ -6,7 +6,8 @@ resource "kubernetes_manifest" "centos_vm" {
       "labels" = {
         "app" = "centos-vm"
       }
-      "name" = "centos-vm"
+      "name"      = "centos-vm"
+      "namespace" = "demo"
     }
     "spec" = {
       "dataVolumeTemplates" = [
@@ -95,16 +96,42 @@ resource "kubernetes_manifest" "centos_vm" {
                 "userData" = <<-EOT
                 #cloud-config
                 user: cloud-user
-                ssh_authorized_keys:
-                  - ${tls_private_key.ssh_key.public_key_openssh}
+                password: pas$w0rd
                 chpasswd: { expire: False }
                 EOT
               }
               "name" = "cloudinitdisk"
             },
           ]
+          "accessCredentials" = [
+            {
+              "sshPublicKey" = {
+                "propagationMethod" = {
+                  "configDrive" = {}
+                }
+                "source" = {
+                  "secret" = {
+                    "secretName" = "authorized-keys"
+                  }
+                }
+              }
+            },
+          ]
         }
       }
     }
   }
+  computed_fields = ["metadata.labels", "metadata.annotations", "spec", "status"]
+}
+
+resource "kubernetes_secret" "authorized_keys" {
+  metadata {
+    name      = "authorized-keys"
+    namespace = "demo"
+  }
+
+  data = {
+    key = tls_private_key.ssh_key.public_key_openssh
+  }
+
 }
