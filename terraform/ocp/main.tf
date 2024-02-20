@@ -42,7 +42,7 @@ resource "kubernetes_manifest" "demo_app_route" {
       "namespace" = "demo"
     }
     "spec" = {
-      "host" = "demo-app.crc-vm.${var.host_name}.instruqt.io"
+      "host" = "demo-app-container.crc-vm.${var.host_name}.instruqt.io"
       "port" = {
         "targetPort" = "web"
       }
